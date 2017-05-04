@@ -1,0 +1,15 @@
+{
+  "name": "qb",
+  "description": "Object oriented, immutable sql query builder for PHP",
+  "autoload": {
+    "psr-4": {
+      "ComposableQB\\": "src/"
+    }
+  },
+  "require": {
+    "PHP": ">= 7.0"
+  },
+  "require-dev": {
+    "humbug/humbug": "1.0.0-alpha2"
+  }
+}

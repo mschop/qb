@@ -4,6 +4,7 @@ namespace ComposableQB\Fragments;
 
 
 use ComposableQB\QueryBuilder;
+use ComposableQB\Security;
 
 class SelectFragment extends QueryBuilder
 {
@@ -12,6 +13,10 @@ class SelectFragment extends QueryBuilder
 
     public function __construct(QueryBuilder $prev, string $select, string $alias = null)
     {
+        Security::validateIdentifier($select);
+        if($alias !== null) {
+            Security::validateIdentifier($alias);
+        }
         parent::__construct($prev);
         $this->select = $select;
         $this->alias = $alias;
@@ -19,6 +24,8 @@ class SelectFragment extends QueryBuilder
 
     public function __toString()
     {
-        return $this->alias === null ? $this->select : $this->select . ' AS ' . $this->alias;
+        $select = "`{$this->select}`";
+        $alias = $this->alias !== null ? " AS `{$this->alias}`" : "";
+        return $select . $alias;
     }
 }

@@ -5,15 +5,42 @@ namespace ComposableQB;
 
 class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 {
-    public function test()
+    public function test_happyPath()
     {
-        $qb = QueryBuilder::from('some_table');
-        $sql = $qb
-            ->select('some_column', 'some_alias')
-            ->select('another_column', 'another_alias')
-            ->join('another_table', 'some_table.another_id = ano.id', 'ano')
-            ->getQuery();
+        $qb = new QueryBuilder();
+        $qb = $qb
+            ->from('products', 'p')
+            ->select('id')
+            ->select('manufacturerId')
+            ->join(
+                'product_categories',
+                $qb->eq(
+                    $qb->column('p', 'productId'),
+                    $qb->column('pc', 'id')
+                ),
+                'pc'
+            )
+            ->rightOuterJoin(
+                'product_translations',
+                $qb->and(
+                    $qb->eq(
+                        $qb->column('pt', 'productId'),
+                        $qb->column('p', 'id')
+                    ),
+                    $qb->eq(
+                        $qb->column('pt', 'languageId'),
+                        10
+                    ),
+                    $qb->not($qb->column('pt', 'inactive'))
+                )
+            )
+            ->where(
+                $qb->eq(
+                    $qb->column('products', 'manufacturerId'),
+                    $qb->param('manufacturerId')
+                )
+            );
 
-        echo($sql);
+        echo($qb->build()->getQuery());
     }
 }

@@ -3,10 +3,10 @@
 namespace ComposableQB\Expressions;
 
 
-class OrExpression extends BinaryExpression
+class OrExpression extends Expression
 {
     public function __toString()
     {
-        return "({$this->operand1}) OR ({$this->operand2})";
+        return '(' . implode(' OR ', $this->operands) . ')';
     }
 }

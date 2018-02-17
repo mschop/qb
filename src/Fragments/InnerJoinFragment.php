@@ -3,7 +3,9 @@
 namespace ComposableQB\Fragments;
 
 
+use ComposableQB\Expressions\Expression;
 use ComposableQB\QueryBuilder;
+use ComposableQB\Security;
 
 class InnerJoinFragment extends QueryBuilder
 {
@@ -11,8 +13,9 @@ class InnerJoinFragment extends QueryBuilder
     protected $condition;
     protected $alias;
 
-    public function __construct(QueryBuilder $prev, string $table, string $condition, string $alias = null)
+    public function __construct(QueryBuilder $prev, string $table, Expression $condition, string $alias = null)
     {
+        Security::validateIdentifier($table);
         parent::__construct($prev);
         $this->table = $table;
         $this->condition = $condition;
@@ -21,6 +24,8 @@ class InnerJoinFragment extends QueryBuilder
 
     public function __toString()
     {
-        return 'INNER JOIN ' . $this->table . ($this->alias === null ? '' : ' AS ' . $this->alias) . ' ON ' . $this->condition;
+        $table = "`{$this->table}`";
+        $alias = $this->alias === null ? '' : "AS `{$this->alias}`";
+        return "JOIN $table $alias ON {$this->condition}";
     }
 }

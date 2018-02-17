@@ -3,10 +3,10 @@
 namespace ComposableQB\Expressions;
 
 
-class AndExpression extends BinaryExpression
+class AndExpression extends Expression
 {
     public function __toString()
     {
-        return "({$this->operand1}) AND ({$this->operand2})";
+        return '(' . implode(' AND ', $this->operands) . ')';
     }
 }

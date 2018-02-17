@@ -3,10 +3,10 @@
 namespace ComposableQB\Expressions;
 
 
-class NotExpression extends SingularExpression
+class NotExpression extends Expression
 {
     public function __toString()
     {
-        return "NOT ({$this->operand})";
+        return "NOT {$this->operands[0]}";
     }
 }

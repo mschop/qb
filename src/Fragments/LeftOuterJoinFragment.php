@@ -3,7 +3,9 @@
 namespace ComposableQB\Fragments;
 
 
+use ComposableQB\Expressions\Expression;
 use ComposableQB\QueryBuilder;
+use ComposableQB\Security;
 
 class LeftOuterJoinFragment extends QueryBuilder
 {
@@ -11,8 +13,12 @@ class LeftOuterJoinFragment extends QueryBuilder
     protected $condition;
     protected $alias;
 
-    public function __construct(QueryBuilder $prev, string $table, string $condition, string $alias = null)
+    public function __construct(QueryBuilder $prev, string $table, Expression $condition, string $alias = null)
     {
+        Security::validateIdentifier($table);
+        if($alias !== null) {
+            Security::validateIdentifier($alias);
+        }
         parent::__construct($prev);
         $this->table = $table;
         $this->condition = $condition;
@@ -21,6 +27,8 @@ class LeftOuterJoinFragment extends QueryBuilder
 
     public function __toString()
     {
-        return 'LEFT OUTER JOIN ' . $this->table . ($this->alias === null ? '' : ' AS ' . $this->alias) . ' ON ' . $this->condition;
+        $table = "`{$this->table}`";
+        $alias = $this->alias === null ? '' : "AS `{$this->alias}`";
+        return "LEFT JOIN $table $alias ON {$this->condition}";
     }
 }

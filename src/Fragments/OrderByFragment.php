@@ -9,28 +9,46 @@ namespace SecureMy\Fragments;
 
 use SecureMy\Expressions\ColumnExpression;
 use SecureMy\QueryBuilder;
+use SecureMy\Security;
 
 class OrderByFragment extends QueryBuilder implements FragmentInterface
 {
-    protected $column;
-    protected $direction;
+    protected $orderBy;
 
 
     /**
      * OrderByFragment constructor.
+     * @param QueryBuilder $prev
+     * @param string       $orderBy
      */
-    public function __construct(QueryBuilder $prev, ColumnExpression $column, string $direction)
+    public function __construct(QueryBuilder $prev, string $orderBy)
     {
-        $direction = strtoupper($direction);
-        if($direction !== 'ASC' && $direction !== 'DESC') {
-            throw new \InvalidArgumentException('Order direction must be ASC or DESC');
+        $orderBy   = trim($orderBy);
+        $exploded = explode(' ', $orderBy);
+        $final = [];
+        foreach($exploded as $splinter) {
+            if(!empty(trim($splinter))) {
+                $final[] = trim($splinter);
+            }
         }
-        $this->column = $column;
-        $this->direction = $direction;
+        if(count($final) > 2) {
+            throw new \InvalidArgumentException('Invalid order by');
+        }
+        Security::validateIdentifier($final[0]);
+        $this->orderBy = $final[0];
+
+        if(isset($final[1])) {
+            $direction = strtoupper($final[1]);
+            if($direction !== 'ASC' && $direction !== 'DESC') {
+                throw new \InvalidArgumentException('Invalid direction in order by');
+            }
+            $this->orderBy .= ' ' . $direction;
+        }
+        parent::__construct($prev);
     }
 
     public function __toString()
     {
-        return $this->column . ' ' . $this->direction;
+        return $this->orderBy;
     }
 }

@@ -112,14 +112,14 @@ class QueryBuilder
         return new WhereFragment($this, $expression);
     }
 
-    public function groupBy($table, $column): GroupByFragment
+    public function groupBy($groupBy): GroupByFragment
     {
-        return new GroupByFragment($this, new ColumnExpression($table, $column));
+        return new GroupByFragment($this, $groupBy);
     }
 
-    public function orderBy($table, $column, $direction): OrderByFragment
+    public function orderBy($orderBy): OrderByFragment
     {
-        return new OrderByFragment($this, new ColumnExpression($table, $column), $direction);
+        return new OrderByFragment($this, $orderBy);
     }
 
     public function and (): AndExpression

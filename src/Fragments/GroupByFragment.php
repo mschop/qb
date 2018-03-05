@@ -6,27 +6,27 @@
 
 namespace SecureMy\Fragments;
 
-
-use SecureMy\Expressions\ColumnExpression;
 use SecureMy\QueryBuilder;
+use SecureMy\Security;
 
 class GroupByFragment extends QueryBuilder implements FragmentInterface
 {
-    protected $column;
+    protected $groupBy;
 
     /**
      * GroupByFragment constructor.
-     * @param QueryBuilder     $prev
-     * @param ColumnExpression $column
+     * @param QueryBuilder $prev
+     * @param string       $groupBy
      */
-    public function __construct(QueryBuilder $prev, ColumnExpression $column)
+    public function __construct(QueryBuilder $prev, string $groupBy)
     {
+        Security::validateIdentifier($groupBy);
+        $this->groupBy = $groupBy;
         parent::__construct($prev);
-        $this->column = $column;
     }
 
     public function __toString()
     {
-        return (string)$this->column;
+        return $this->groupBy;
     }
 }

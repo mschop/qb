@@ -14,6 +14,7 @@ use SecureMy\Fragments\FullOuterJoinFragment;
 use SecureMy\Fragments\GroupByFragment;
 use SecureMy\Fragments\InnerJoinFragment;
 use SecureMy\Fragments\LeftOuterJoinFragment;
+use SecureMy\Fragments\OrderByFragment;
 use SecureMy\Fragments\RightOuterJoinFragment;
 use SecureMy\Fragments\SelectFragment;
 use SecureMy\Fragments\WhereFragment;
@@ -114,6 +115,11 @@ class QueryBuilder
     public function groupBy($table, $column): GroupByFragment
     {
         return new GroupByFragment($this, new ColumnExpression($table, $column));
+    }
+
+    public function orderBy($table, $column, $direction): OrderByFragment
+    {
+        return new OrderByFragment($this, new ColumnExpression($table, $column), $direction);
     }
 
     public function and (): AndExpression

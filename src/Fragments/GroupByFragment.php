@@ -27,6 +27,6 @@ class GroupByFragment extends QueryBuilder implements FragmentInterface
 
     public function __toString()
     {
-        return $this->groupBy;
+        return '`' . $this->groupBy . '`';
     }
 }

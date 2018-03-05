@@ -203,9 +203,13 @@ class QueryBuilder
             $query .= self::LINEBREAK;
             $query .= implode(self::LINEBREAK, $groupedFragments[FullOuterJoinFragment::class]);
         }
+        if (isset($groupedFragments[OrderByFragment::class])) {
+            $query .= self::LINEBREAK . 'ORDER BY ';
+            $query .= implode(', ', array_reverse($groupedFragments[OrderByFragment::class]));
+        }
         if (isset($groupedFragments[GroupByFragment::class])) {
-            $query .= self::LINEBREAK . "GROUP BY" . self::LINEBREAK;
-            $query .= implode(self::LINEBREAK . ',', array_reverse($groupedFragments[GroupByFragment::class]));
+            $query .= self::LINEBREAK . "GROUP BY ";
+            $query .= implode(', ', array_reverse($groupedFragments[GroupByFragment::class]));
         }
         if (isset($groupedFragments[WhereFragment::class])) {
             $query .= self::LINEBREAK . "WHERE ";

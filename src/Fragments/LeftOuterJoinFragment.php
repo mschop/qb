@@ -7,7 +7,7 @@ use SecureMy\Expressions\Expression;
 use SecureMy\QueryBuilder;
 use SecureMy\Security;
 
-class LeftOuterJoinFragment extends QueryBuilder
+class LeftOuterJoinFragment extends QueryBuilder implements FragmentInterface
 {
     protected $table;
     protected $condition;

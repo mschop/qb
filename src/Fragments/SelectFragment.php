@@ -6,7 +6,7 @@ namespace SecureMy\Fragments;
 use SecureMy\QueryBuilder;
 use SecureMy\Security;
 
-class SelectFragment extends QueryBuilder
+class SelectFragment extends QueryBuilder implements FragmentInterface
 {
     protected $select;
     protected $alias;

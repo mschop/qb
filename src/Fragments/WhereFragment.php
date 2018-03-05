@@ -6,7 +6,7 @@ namespace SecureMy\Fragments;
 use SecureMy\Expressions\Expression;
 use SecureMy\QueryBuilder;
 
-class WhereFragment extends QueryBuilder
+class WhereFragment extends QueryBuilder implements FragmentInterface
 {
     protected $expression;
 

@@ -11,6 +11,7 @@ use SecureMy\Expressions\OrExpression;
 use SecureMy\Expressions\ParamExpression;
 use SecureMy\Fragments\FromFragment;
 use SecureMy\Fragments\FullOuterJoinFragment;
+use SecureMy\Fragments\GroupByFragment;
 use SecureMy\Fragments\InnerJoinFragment;
 use SecureMy\Fragments\LeftOuterJoinFragment;
 use SecureMy\Fragments\RightOuterJoinFragment;
@@ -110,6 +111,11 @@ class QueryBuilder
         return new WhereFragment($this, $expression);
     }
 
+    public function groupBy($table, $column): GroupByFragment
+    {
+        return new GroupByFragment($this, new ColumnExpression($table, $column));
+    }
+
     public function and (): AndExpression
     {
         $allExpressions = func_get_args();
@@ -190,6 +196,10 @@ class QueryBuilder
         if (isset($groupedFragments[FullOuterJoinFragment::class])) {
             $query .= self::LINEBREAK;
             $query .= implode(self::LINEBREAK, $groupedFragments[FullOuterJoinFragment::class]);
+        }
+        if (isset($groupedFragments[GroupByFragment::class])) {
+            $query .= self::LINEBREAK . "GROUP BY" . self::LINEBREAK;
+            $query .= implode(self::LINEBREAK . ',', array_reverse($groupedFragments[GroupByFragment::class]));
         }
         if (isset($groupedFragments[WhereFragment::class])) {
             $query .= self::LINEBREAK . "WHERE ";

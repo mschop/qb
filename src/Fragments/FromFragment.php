@@ -7,7 +7,7 @@ use SecureMy\QueryBuilder;
 use SecureMy\Security;
 use SecureMy\Security\IdentifierSecurityPolicyInterface;
 
-class FromFragment extends QueryBuilder
+class FromFragment extends QueryBuilder implements FragmentInterface
 {
     protected $table;
     protected $alias;

@@ -1,5 +1,5 @@
 {
-  "name": "mschop/SecureMy",
+  "name": "mschop/securemy",
   "description": "Object oriented, immutable and 100% secure sql query builder for PHP",
   "autoload": {
     "psr-4": {

@@ -1,9 +1,9 @@
 {
-  "name": "qb",
-  "description": "Object oriented, immutable sql query builder for PHP",
+  "name": "mschop/SecureMy",
+  "description": "Object oriented, immutable and 100% secure sql query builder for PHP",
   "autoload": {
     "psr-4": {
-      "ComposableQB\\": "src/"
+      "SecureMy\\": "src/"
     }
   },
   "require": {

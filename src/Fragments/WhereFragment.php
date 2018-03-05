@@ -1,10 +1,10 @@
 <?php
 
-namespace ComposableQB\Fragments;
+namespace SecureMy\Fragments;
 
 
-use ComposableQB\Expressions\Expression;
-use ComposableQB\QueryBuilder;
+use SecureMy\Expressions\Expression;
+use SecureMy\QueryBuilder;
 
 class WhereFragment extends QueryBuilder
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace ComposableQB\Expressions;
+namespace SecureMy\Expressions;
 
-use ComposableQB\Security;
+use SecureMy\Security;
 
 class ColumnExpression extends Expression
 {

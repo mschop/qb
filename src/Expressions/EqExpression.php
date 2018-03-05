@@ -1,6 +1,6 @@
 <?php
 
-namespace ComposableQB\Expressions;
+namespace SecureMy\Expressions;
 
 
 class EqExpression extends Expression

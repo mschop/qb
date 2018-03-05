@@ -1,28 +1,28 @@
 <?php
 
-namespace ComposableQB;
+namespace SecureMy;
 
-use ComposableQB\Expressions\AndExpression;
-use ComposableQB\Expressions\ColumnExpression;
-use ComposableQB\Expressions\EqExpression;
-use ComposableQB\Expressions\Expression;
-use ComposableQB\Expressions\NotExpression;
-use ComposableQB\Expressions\OrExpression;
-use ComposableQB\Expressions\ParamExpression;
-use ComposableQB\Fragments\FromFragment;
-use ComposableQB\Fragments\FullOuterJoinFragment;
-use ComposableQB\Fragments\InnerJoinFragment;
-use ComposableQB\Fragments\LeftOuterJoinFragment;
-use ComposableQB\Fragments\RightOuterJoinFragment;
-use ComposableQB\Fragments\SelectFragment;
-use ComposableQB\Fragments\WhereFragment;
+use SecureMy\Expressions\AndExpression;
+use SecureMy\Expressions\ColumnExpression;
+use SecureMy\Expressions\EqExpression;
+use SecureMy\Expressions\Expression;
+use SecureMy\Expressions\NotExpression;
+use SecureMy\Expressions\OrExpression;
+use SecureMy\Expressions\ParamExpression;
+use SecureMy\Fragments\FromFragment;
+use SecureMy\Fragments\FullOuterJoinFragment;
+use SecureMy\Fragments\InnerJoinFragment;
+use SecureMy\Fragments\LeftOuterJoinFragment;
+use SecureMy\Fragments\RightOuterJoinFragment;
+use SecureMy\Fragments\SelectFragment;
+use SecureMy\Fragments\WhereFragment;
 
 /**
  * Class QueryBuilder
  *
  * The QueryBuilder class is the main class for building queries and acts like a Fragment and Expression factory.
  *
- * @package ComposableQB
+ * @package SecureMy
  */
 class QueryBuilder
 {

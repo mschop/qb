@@ -1,11 +1,11 @@
 <?php
 
-namespace ComposableQB\Fragments;
+namespace SecureMy\Fragments;
 
 
-use ComposableQB\Expressions\Expression;
-use ComposableQB\QueryBuilder;
-use ComposableQB\Security;
+use SecureMy\Expressions\Expression;
+use SecureMy\QueryBuilder;
+use SecureMy\Security;
 
 class RightOuterJoinFragment extends QueryBuilder
 {

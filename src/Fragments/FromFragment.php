@@ -1,11 +1,11 @@
 <?php
 
-namespace ComposableQB\Fragments;
+namespace SecureMy\Fragments;
 
 
-use ComposableQB\QueryBuilder;
-use ComposableQB\Security;
-use ComposableQB\Security\IdentifierSecurityPolicyInterface;
+use SecureMy\QueryBuilder;
+use SecureMy\Security;
+use SecureMy\Security\IdentifierSecurityPolicyInterface;
 
 class FromFragment extends QueryBuilder
 {

@@ -39,6 +39,8 @@ class QueryBuilder
      */
     protected $prev;
 
+    protected $values = [];
+
     /**
      * QueryBuilder constructor.
      * @param QueryBuilder|null $prev
@@ -166,6 +168,8 @@ class QueryBuilder
 
     public function build(): BuildResult
     {
+        // GROUP FRAGMENTS
+
         $groupedFragments = [];
         $cur = $this;
         do {
@@ -180,6 +184,9 @@ class QueryBuilder
         if (!isset($groupedFragments[FromFragment::class])) {
             throw new InvalidBuilderStateException("No from fragment specified");
         }
+
+
+        // BUILD QUERY
 
         $query = '';
 
@@ -216,6 +223,21 @@ class QueryBuilder
             $query .= implode(self::LINEBREAK . "AND", $groupedFragments[WhereFragment::class]);
         }
 
+
+        // BUILD PARAMS
+        $params = [];
+        foreach($groupedFragments as $group) {
+            foreach($group as $fragment) {
+                foreach($fragment->get)
+            }
+        }
+
+
         return new BuildResult($query, []);
+    }
+
+    protected function getValues()
+    {
+        return $this->values;
     }
 }

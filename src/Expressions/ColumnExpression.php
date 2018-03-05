@@ -6,20 +6,28 @@ use SecureMy\Security;
 
 class ColumnExpression extends Expression
 {
-    protected $table;
+    protected $tableOrColumn;
     protected $column;
 
-    public function __construct(string $table, string $column)
+    public function __construct(string $tableOrColumn, string $column = null)
     {
-        Security::validateIdentifier($table);
-        Security::validateIdentifier($column);
-        $this->table = $table;
-        $this->column = $column;
+        $tableOrColumn = trim($tableOrColumn);
+        $column = trim($column);
+        Security::validateIdentifier($tableOrColumn);
+        if($column !== null) {
+            Security::validateIdentifier($column);
+        }
+        $this->tableOrColumn = $tableOrColumn;
+        $this->column        = $column;
     }
 
     public function __toString()
     {
-        return '`' . $this->table . '`.`' . $this->column . '`';
+        $result = '`' . $this->tableOrColumn . '`';
+        if($this->column !== null) {
+            $result .= '.`' . $this->column . '`';
+        }
+        return $result;
     }
 
 }

@@ -154,9 +154,9 @@ class QueryBuilder
         return new EqExpression([$operand1, $operand2]);
     }
 
-    public function column(string $table, string $column)
+    public function column(string $tableOrColumn, string $column = null)
     {
-        return new ColumnExpression($table, $column);
+        return new ColumnExpression($tableOrColumn, $column);
     }
 
     public function param(string $name)

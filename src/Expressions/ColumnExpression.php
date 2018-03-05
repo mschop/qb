@@ -12,9 +12,9 @@ class ColumnExpression extends Expression
     public function __construct(string $tableOrColumn, string $column = null)
     {
         $tableOrColumn = trim($tableOrColumn);
-        $column = trim($column);
         Security::validateIdentifier($tableOrColumn);
         if($column !== null) {
+            $column = trim($column);
             Security::validateIdentifier($column);
         }
         $this->tableOrColumn = $tableOrColumn;

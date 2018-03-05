@@ -35,7 +35,7 @@ class OrderByFragment extends QueryBuilder implements FragmentInterface
             throw new \InvalidArgumentException('Invalid order by');
         }
         Security::validateIdentifier($final[0]);
-        $this->orderBy = $final[0];
+        $this->orderBy = '`' . $final[0] . '`';
 
         if(isset($final[1])) {
             $direction = strtoupper($final[1]);

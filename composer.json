@@ -8,8 +8,5 @@
   },
   "require": {
     "PHP": ">= 7.0"
-  },
-  "require-dev": {
-    "humbug/humbug": "1.0.0-alpha2"
   }
 }

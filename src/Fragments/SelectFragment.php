@@ -21,7 +21,7 @@ class SelectFragment extends QueryBuilder
             $dotExploded = array_map('trim', $dotExploded);
             foreach($dotExploded as $part) {
                 if($part !== '*') {
-                    Security::validateIdentifier($select);
+                    Security::validateIdentifier($part);
                 }
             }
             $this->select = $dotExploded;

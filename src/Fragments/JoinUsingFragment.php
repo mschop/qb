@@ -32,13 +32,14 @@ class JoinUsingFragment extends QueryBuilder
             foreach ($using as $colName) {
                 Security::validateIdentifier($colName);
             }
-            $this->using = implode(', ', $using);
+            $this->using = '`' . implode('`, `', $using) . '`';
         } else {
             Security::validateIdentifier($using);
+            $this->using = '`' . $using . '`';
         }
+
         if ($alias !== null) {
             Security::validateIdentifier($alias);
-            $this->using = $using;
         }
 
         if ($type !== 'LEFT' && $type !== 'RIGHT' && $type !== 'INNER') {
@@ -52,7 +53,7 @@ class JoinUsingFragment extends QueryBuilder
         $table = "`{$this->table}`";
         $alias = $this->alias === null ? '' : "AS `{$this->alias}`";
 
-        return "JOIN $table $alias USING ";
+        return "JOIN $table $alias USING ({$this->using})";
     }
 
     protected function getValues()

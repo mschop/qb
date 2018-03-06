@@ -66,7 +66,7 @@ class SelectFragment extends QueryBuilder
      */
     protected function getExpressions()
     {
-        return [];
+        return $this->select instanceof Expression ? [$this->select] : [];
     }
 
 }

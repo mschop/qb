@@ -65,7 +65,7 @@ class OrderByFragment extends QueryBuilder
      */
     protected function getExpressions()
     {
-
+        return [];
     }
 
 

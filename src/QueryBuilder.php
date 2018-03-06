@@ -13,6 +13,7 @@ use SecureMy\Fragments\FromFragment;
 use SecureMy\Fragments\FullJoinFragment;
 use SecureMy\Fragments\GroupByFragment;
 use SecureMy\Fragments\JoinFragment;
+use SecureMy\Fragments\JoinUsingFragment;
 use SecureMy\Fragments\LeftJoinFragment;
 use SecureMy\Fragments\OrderByFragment;
 use SecureMy\Fragments\RightJoinFragment;
@@ -66,14 +67,14 @@ abstract class QueryBuilder
         // GROUP FRAGMENTS
 
         $groupedFragments = [];
-        $cur = $this;
+        $cur              = $this;
         do {
             $curClass = get_class($cur);
             if (!isset($groupedFragments[$curClass])) {
                 $groupedFragments[$curClass] = [];
             }
             $groupedFragments[$curClass][] = $cur;
-            $cur = $cur->prev;
+            $cur                           = $cur->prev;
         } while ($cur);
 
         if (!isset($groupedFragments[FromFragment::class])) {
@@ -124,15 +125,16 @@ abstract class QueryBuilder
 
     public function getParams()
     {
-        $cur = $this;
+        $cur    = $this;
         $params = [];
         do {
-            foreach($cur->getExpressions() as $expression) {
+            foreach ($cur->getExpressions() as $expression) {
                 $params = array_merge($params, $expression->getValues());
             }
             $params = array_merge($params, $cur->getValues());
-            $cur = $cur->prev;
+            $cur    = $cur->prev;
         } while ($cur);
+
         return $params;
     }
 
@@ -158,7 +160,7 @@ abstract class QueryBuilder
     /**
      * Creates the from fragment
      *
-     * @param string $table
+     * @param string      $table
      * @param string|null $alias
      * @return FromFragment
      */
@@ -170,7 +172,7 @@ abstract class QueryBuilder
     /**
      * Returns a new select fragment
      *
-     * @param string $select
+     * @param string      $select
      * @param string|null $alias
      * @return SelectFragment
      */
@@ -182,19 +184,31 @@ abstract class QueryBuilder
     public function selectMany(array $selects): SelectFragment
     {
         $last = $this;
-        foreach($selects as $key => $value) {
-            if(is_string($key)) {
+        foreach ($selects as $key => $value) {
+            if (is_string($key)) {
                 $last = new SelectFragment($last, $key, $value);
             } else {
                 $last = new SelectFragment($last, $value);
             }
         }
+
         return $last;
     }
 
     public function join(string $table, Expression $condition, string $alias = null): JoinFragment
     {
         return new JoinFragment($this, $table, $condition, $alias);
+    }
+
+    /**
+     * @param string       $table
+     * @param string|array $using
+     * @param null         $alias
+     * @return JoinUsingFragment
+     */
+    public function joinUsing(string $table, $using, $alias = null): JoinUsingFragment
+    {
+        return new JoinUsingFragment($this, $table, $using, $alias);
     }
 
     public function leftJoin(string $table, Expression $condition, string $alias = null): LeftJoinFragment
@@ -230,34 +244,37 @@ abstract class QueryBuilder
     public function bindMany($array): ValueFragment
     {
         $last = $this;
-        foreach($array as $key => $value) {
+        foreach ($array as $key => $value) {
             $last = new ValueFragment($last, $key, $value);
         }
+
         return $last;
     }
 
 
     // EXPRESSIONS
 
-    public function and(): AndExpression
+    public function and (): AndExpression
     {
         $allExpressions = func_get_args();
-        $last = array_pop($allExpressions);
+        $last           = array_pop($allExpressions);
         $allExpressions = array_reverse($allExpressions);
         foreach ($allExpressions as $expression) {
             $last = new AndExpression([$last, $expression]);
         }
+
         return $last;
     }
 
-    public function or(): OrExpression
+    public function or (): OrExpression
     {
         $allExpressions = func_get_args();
-        $last = array_pop($allExpressions);
+        $last           = array_pop($allExpressions);
         $allExpressions = array_reverse($allExpressions);
         foreach ($allExpressions as $expression) {
             $last = new OrExpression([$last, $expression]);
         }
+
         return $last;
     }
 

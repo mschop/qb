@@ -105,18 +105,19 @@ abstract class QueryBuilder
             $query .= self::LINEBREAK;
             $query .= implode(self::LINEBREAK, $groupedFragments[FullJoinFragment::class]);
         }
-        if (isset($groupedFragments[OrderByFragment::class])) {
-            $query .= self::LINEBREAK . 'ORDER BY ';
-            $query .= implode(', ', array_reverse($groupedFragments[OrderByFragment::class]));
+        if (isset($groupedFragments[WhereFragment::class])) {
+            $query .= self::LINEBREAK . "WHERE ";
+            $query .= implode(self::LINEBREAK . "AND", $groupedFragments[WhereFragment::class]);
         }
         if (isset($groupedFragments[GroupByFragment::class])) {
             $query .= self::LINEBREAK . "GROUP BY ";
             $query .= implode(', ', array_reverse($groupedFragments[GroupByFragment::class]));
         }
-        if (isset($groupedFragments[WhereFragment::class])) {
-            $query .= self::LINEBREAK . "WHERE ";
-            $query .= implode(self::LINEBREAK . "AND", $groupedFragments[WhereFragment::class]);
+        if (isset($groupedFragments[OrderByFragment::class])) {
+            $query .= self::LINEBREAK . 'ORDER BY ';
+            $query .= implode(', ', array_reverse($groupedFragments[OrderByFragment::class]));
         }
+
 
         return $query;
 

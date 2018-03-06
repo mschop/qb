@@ -183,7 +183,7 @@ abstract class QueryBuilder
     {
         $last = $this;
         foreach ($selects as $key => $value) {
-            if (is_string($key)) {
+            if (is_string($key) || $key instanceof Expression) {
                 $last = new SelectFragment($last, $key, $value);
             } else {
                 $last = new SelectFragment($last, $value);

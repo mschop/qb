@@ -58,7 +58,7 @@ $stmt->execute([
 ]);
 ```
 
-I often sea very risky implementations that could, if not carefully applied, cause sql injection
+I often see very risky implementations that could, if not carefully applied, cause sql injection
 vulnerabilities. SecureMy protectect identifier through an character whitelist. Therefore it checks
  every identifier through the regex `/^[a-z0-9._ ]+$/i`.
  As you maybe noticed, this is not compatible to databases, which contain special character in table

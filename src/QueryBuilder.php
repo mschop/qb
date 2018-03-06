@@ -6,6 +6,7 @@ use SecureMy\Expressions\AndExpression;
 use SecureMy\Expressions\ColumnExpression;
 use SecureMy\Expressions\EqExpression;
 use SecureMy\Expressions\Expression;
+use SecureMy\Expressions\LikeExpression;
 use SecureMy\Expressions\NotExpression;
 use SecureMy\Expressions\OrExpression;
 use SecureMy\Expressions\ParamExpression;
@@ -197,33 +198,54 @@ abstract class QueryBuilder
 
     public function join(string $table, Expression $condition, string $alias = null): JoinFragment
     {
-        return new JoinFragment($this, $table, $condition, $alias);
+        return new JoinFragment($this, 'INNER', $table, $condition, $alias);
     }
 
     /**
      * @param string       $table
      * @param string|array $using
-     * @param null         $alias
+     * @param string|null  $alias
      * @return JoinUsingFragment
      */
-    public function joinUsing(string $table, $using, $alias = null): JoinUsingFragment
+    public function joinUsing(string $table, $using, string $alias = null): JoinUsingFragment
     {
-        return new JoinUsingFragment($this, $table, $using, $alias);
+        return new JoinUsingFragment($this, 'INNER', $table, $using, $alias);
     }
 
-    public function leftJoin(string $table, Expression $condition, string $alias = null): LeftJoinFragment
+    public function leftJoin(string $table, Expression $condition, string $alias = null): JoinFragment
     {
-        return new LeftJoinFragment($this, $table, $condition, $alias);
+        return new JoinFragment($this, 'LEFT', $table, $condition, $alias);
     }
 
-    public function rightJoin(string $table, Expression $condition, string $alias = null): RightJoinFragment
+    public function leftJoinUsing(string $table, $using, string $alias = null): JoinUsingFragment
     {
-        return new RightJoinFragment($this, $table, $condition, $alias);
+        return new JoinUsingFragment($this, 'LEFT', $table, $using, $alias);
     }
 
-    public function where($expression): WhereFragment
+    public function rightJoin(string $table, Expression $condition, string $alias = null): JoinFragment
     {
-        return new WhereFragment($this, $expression);
+        return new JoinFragment($this, 'RIGHT', $table, $condition, $alias);
+    }
+
+    public function rightJoinUsing(string $table, $using, string $alias = null): JoinUsingFragment
+    {
+        return new JoinUsingFragment($this, 'RIGHT', $table, $using, $alias);
+    }
+
+    /**
+     * @return WhereFragment
+     */
+    public function where(): WhereFragment
+    {
+        $args = func_get_args();
+        $count = count($args);
+        if($count > 1) {
+            return new WhereFragment($this, call_user_func_array([$this, 'and'], $args));
+        } elseif($count = 0) {
+            throw new \InvalidArgumentException("missing where condition");
+        } else {
+            return new WhereFragment($this, $args[0]);
+        }
     }
 
     public function groupBy($groupBy): GroupByFragment
@@ -286,6 +308,11 @@ abstract class QueryBuilder
     public function eq($operand1, $operand2)
     {
         return new EqExpression([$operand1, $operand2]);
+    }
+
+    public function like($operand1, $operand2)
+    {
+        return new LikeExpression($operand1, $operand2);
     }
 
     public function column(string $tableOrColumn, string $column = null)

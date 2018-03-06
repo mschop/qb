@@ -40,7 +40,8 @@ class QueryBuilderTest extends TestCase
                 $qb->eq(
                     $qb->column('products', 'manufacturerId'),
                     $qb->param('manufacturerId')
-                )
+                ),
+                $qb->not($qb->column('products.inactive'))
             )
             ->bind('manufacturerId', 15);
 

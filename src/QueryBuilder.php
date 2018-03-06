@@ -10,12 +10,12 @@ use SecureMy\Expressions\NotExpression;
 use SecureMy\Expressions\OrExpression;
 use SecureMy\Expressions\ParamExpression;
 use SecureMy\Fragments\FromFragment;
-use SecureMy\Fragments\FullOuterJoinFragment;
+use SecureMy\Fragments\FullJoinFragment;
 use SecureMy\Fragments\GroupByFragment;
-use SecureMy\Fragments\InnerJoinFragment;
-use SecureMy\Fragments\LeftOuterJoinFragment;
+use SecureMy\Fragments\JoinFragment;
+use SecureMy\Fragments\LeftJoinFragment;
 use SecureMy\Fragments\OrderByFragment;
-use SecureMy\Fragments\RightOuterJoinFragment;
+use SecureMy\Fragments\RightJoinFragment;
 use SecureMy\Fragments\SelectFragment;
 use SecureMy\Fragments\StartFragment;
 use SecureMy\Fragments\ValueFragment;
@@ -89,21 +89,21 @@ abstract class QueryBuilder
         $query .= implode("," . self::LINEBREAK . self::INDENTATION, $groupedFragments[SelectFragment::class]);
         $query .= self::LINEBREAK;
         $query .= $groupedFragments[FromFragment::class][0];
-        if (isset($groupedFragments[InnerJoinFragment::class])) {
+        if (isset($groupedFragments[JoinFragment::class])) {
             $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, $groupedFragments[InnerJoinFragment::class]);
+            $query .= implode(self::LINEBREAK, $groupedFragments[JoinFragment::class]);
         }
-        if (isset($groupedFragments[LeftOuterJoinFragment::class])) {
+        if (isset($groupedFragments[LeftJoinFragment::class])) {
             $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, $groupedFragments[LeftOuterJoinFragment::class]);
+            $query .= implode(self::LINEBREAK, $groupedFragments[LeftJoinFragment::class]);
         }
-        if (isset($groupedFragments[RightOuterJoinFragment::class])) {
+        if (isset($groupedFragments[RightJoinFragment::class])) {
             $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, $groupedFragments[RightOuterJoinFragment::class]);
+            $query .= implode(self::LINEBREAK, $groupedFragments[RightJoinFragment::class]);
         }
-        if (isset($groupedFragments[FullOuterJoinFragment::class])) {
+        if (isset($groupedFragments[FullJoinFragment::class])) {
             $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, $groupedFragments[FullOuterJoinFragment::class]);
+            $query .= implode(self::LINEBREAK, $groupedFragments[FullJoinFragment::class]);
         }
         if (isset($groupedFragments[OrderByFragment::class])) {
             $query .= self::LINEBREAK . 'ORDER BY ';
@@ -194,39 +194,37 @@ abstract class QueryBuilder
         return new SelectFragment($this, $select, $alias);
     }
 
-    public function join(string $table, Expression $condition, string $alias = null): InnerJoinFragment
+    public function selectMany(array $selects): SelectFragment
     {
-        return $this->innerJoin($table, $condition, $alias);
+        $last = $this;
+        foreach($selects as $key => $value) {
+            if(is_string($key)) {
+                $last = new SelectFragment($last, $key, $value);
+            } else {
+                $last = new SelectFragment($last, $value);
+            }
+        }
+        return $last;
     }
 
-    public function innerJoin(string $table, Expression $condition, string $alias = null): InnerJoinFragment
+    public function join(string $table, Expression $condition, string $alias = null): JoinFragment
     {
-        return new InnerJoinFragment($this, $table, $condition, $alias);
+        return new JoinFragment($this, $table, $condition, $alias);
     }
 
-    public function leftJoin(string $table, Expression $condition, string $alias = null): LeftOuterJoinFragment
+    public function leftJoin(string $table, Expression $condition, string $alias = null): LeftJoinFragment
     {
-        return new LeftOuterJoinFragment($this, $table, $condition, $alias);
+        return new LeftJoinFragment($this, $table, $condition, $alias);
     }
 
-    public function leftOuterJoin(string $table, Expression $condition, string $alias = null): LeftOuterJoinFragment
+    public function rightJoin(string $table, Expression $condition, string $alias = null): RightJoinFragment
     {
-        return $this->leftJoin($table, $condition, $alias);
+        return new RightJoinFragment($this, $table, $condition, $alias);
     }
 
-    public function rightJoin(string $table, Expression $condition, string $alias = null): RightOuterJoinFragment
+    public function fullJoin(string $table, Expression $condition, string $alias = null): FullJoinFragment
     {
-        return new RightOuterJoinFragment($this, $table, $condition, $alias);
-    }
-
-    public function rightOuterJoin(string $table, Expression $condition, string $alias = null): RightOuterJoinFragment
-    {
-        return $this->rightJoin($table, $condition, $alias);
-    }
-
-    public function fullOuterJoin(string $table, Expression $condition, string $alias = null): FullOuterJoinFragment
-    {
-        return new FullOuterJoinFragment($this, $table, $condition, $alias);
+        return new FullJoinFragment($this, $table, $condition, $alias);
     }
 
     public function where($expression): WhereFragment

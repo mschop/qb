@@ -7,17 +7,15 @@ use SecureMy\Expressions\Expression;
 use SecureMy\QueryBuilder;
 use SecureMy\Security;
 
-class RightOuterJoinFragment extends QueryBuilder
+class JoinFragment extends QueryBuilder
 {
     protected $table;
     protected $condition;
     protected $alias;
 
-    public function __construct(QueryBuilder $prev, string $table, Expression $condition, string $alias = null) {
+    public function __construct(QueryBuilder $prev, string $table, Expression $condition, string $alias = null)
+    {
         Security::validateIdentifier($table);
-        if($alias !== null) {
-            Security::validateIdentifier($alias);
-        }
         parent::__construct($prev);
         $this->table = $table;
         $this->condition = $condition;
@@ -26,8 +24,9 @@ class RightOuterJoinFragment extends QueryBuilder
 
     public function __toString()
     {
+        $table = "`{$this->table}`";
         $alias = $this->alias === null ? '' : "AS `{$this->alias}`";
-        return "RIGHT JOIN `{$this->table}` $alias ON {$this->condition}";
+        return "JOIN $table $alias ON {$this->condition}";
     }
 
     /**
@@ -45,4 +44,6 @@ class RightOuterJoinFragment extends QueryBuilder
     {
         return [$this->condition];
     }
+
+
 }

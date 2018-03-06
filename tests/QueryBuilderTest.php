@@ -1,13 +1,15 @@
 <?php
 
-namespace ComposableQB;
+namespace SecureMy;
 
 
-class QueryBuilderTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class QueryBuilderTest extends TestCase
 {
     public function test_happyPath()
     {
-        $qb = new QueryBuilder();
+        $qb = QueryBuilder::create();
         $qb = $qb
             ->from('products', 'p')
             ->select('id')
@@ -20,18 +22,18 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
                 ),
                 'pc'
             )
-            ->rightOuterJoin(
+            ->rightJoin(
                 'product_translations',
                 $qb->and(
                     $qb->eq(
-                        $qb->column('pt', 'productId'),
-                        $qb->column('p', 'id')
+                        $qb->column('pt.productId'),
+                        $qb->column('p.id')
                     ),
                     $qb->eq(
-                        $qb->column('pt', 'languageId'),
+                        $qb->column('pt.languageId'),
                         10
                     ),
-                    $qb->not($qb->column('pt', 'inactive'))
+                    $qb->not($qb->column('pt.inactive'))
                 )
             )
             ->where(
@@ -39,8 +41,10 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
                     $qb->column('products', 'manufacturerId'),
                     $qb->param('manufacturerId')
                 )
-            );
+            )
+            ->bind('manufacturerId', 15);
 
-        echo($qb->build()->getQuery());
+        echo($qb->getQuery());
+        print_r($qb->getParams());
     }
 }

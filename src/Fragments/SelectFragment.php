@@ -6,7 +6,7 @@ namespace SecureMy\Fragments;
 use SecureMy\QueryBuilder;
 use SecureMy\Security;
 
-class SelectFragment extends QueryBuilder implements FragmentInterface
+class SelectFragment extends QueryBuilder
 {
     protected $select;
     protected $alias;
@@ -27,5 +27,21 @@ class SelectFragment extends QueryBuilder implements FragmentInterface
         $select = "`{$this->select}`";
         $alias = $this->alias !== null ? " AS `{$this->alias}`" : "";
         return $select . $alias;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getValues()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getExpressions()
+    {
+        return [];
     }
 }

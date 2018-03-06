@@ -11,7 +11,7 @@ use SecureMy\Expressions\ColumnExpression;
 use SecureMy\QueryBuilder;
 use SecureMy\Security;
 
-class OrderByFragment extends QueryBuilder implements FragmentInterface
+class OrderByFragment extends QueryBuilder
 {
     protected $orderBy;
 
@@ -51,4 +51,22 @@ class OrderByFragment extends QueryBuilder implements FragmentInterface
     {
         return $this->orderBy;
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getValues()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getExpressions()
+    {
+
+    }
+
+
 }

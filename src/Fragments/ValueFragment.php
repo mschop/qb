@@ -7,27 +7,29 @@
 namespace SecureMy\Fragments;
 
 use SecureMy\QueryBuilder;
-use SecureMy\Security;
 
-class GroupByFragment extends QueryBuilder
+class ValueFragment extends QueryBuilder
 {
-    protected $groupBy;
+    protected $key;
+    protected $value;
 
     /**
-     * GroupByFragment constructor.
+     * ValueFragment constructor.
      * @param QueryBuilder $prev
-     * @param string       $groupBy
+     * @param string $key
+     * @param mixed $value
      */
-    public function __construct(QueryBuilder $prev, string $groupBy)
+    public function __construct(QueryBuilder $prev, string $key, $value)
     {
-        Security::validateIdentifier($groupBy);
-        $this->groupBy = $groupBy;
+        $this->key   = $key;
+        $this->value = $value;
         parent::__construct($prev);
     }
 
+
     public function __toString()
     {
-        return '`' . $this->groupBy . '`';
+        return '';
     }
 
     /**
@@ -35,7 +37,7 @@ class GroupByFragment extends QueryBuilder
      */
     protected function getValues()
     {
-        return [];
+        return [$this->key => $this->value];
     }
 
     /**
@@ -45,6 +47,4 @@ class GroupByFragment extends QueryBuilder
     {
         return [];
     }
-
-
 }

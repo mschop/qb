@@ -23,7 +23,7 @@ class ColumnExpression extends Expression
 
     public function __toString()
     {
-        $result = '`' . $this->tableOrColumn . '`';
+        $result = '`' . str_replace('.', '`.`', $this->tableOrColumn) . '`';
         if($this->column !== null) {
             $result .= '.`' . $this->column . '`';
         }

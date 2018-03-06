@@ -6,7 +6,7 @@ namespace SecureMy\Fragments;
 use SecureMy\Expressions\Expression;
 use SecureMy\QueryBuilder;
 
-class WhereFragment extends QueryBuilder implements FragmentInterface
+class WhereFragment extends QueryBuilder
 {
     protected $expression;
 
@@ -19,5 +19,21 @@ class WhereFragment extends QueryBuilder implements FragmentInterface
     public function __toString()
     {
         return (string)$this->expression;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getValues()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getExpressions()
+    {
+        return [$this->expression];
     }
 }

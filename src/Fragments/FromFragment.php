@@ -7,7 +7,7 @@ use SecureMy\QueryBuilder;
 use SecureMy\Security;
 use SecureMy\Security\IdentifierSecurityPolicyInterface;
 
-class FromFragment extends QueryBuilder implements FragmentInterface
+class FromFragment extends QueryBuilder
 {
     protected $table;
     protected $alias;
@@ -25,4 +25,22 @@ class FromFragment extends QueryBuilder implements FragmentInterface
         $alias = $this->alias === null ? '' : "AS `{$this->alias}`";
         return "FROM `{$this->table}` $alias";
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getValues()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getExpressions()
+    {
+        return [];
+    }
+
+
 }

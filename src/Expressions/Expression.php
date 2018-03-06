@@ -25,8 +25,17 @@ abstract class Expression
 
     public abstract function __toString();
 
+    /**
+     * Recursive fetch all param values (key => value)
+     *
+     * @return array
+     */
     public function getValues()
     {
-        return $this->values;
+        $result = $this->values;
+        foreach($this->operands as $operand) {
+            $result = array_merge($result, $operand->getValues());
+        }
+        return $result;
     }
 }

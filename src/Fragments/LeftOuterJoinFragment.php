@@ -7,7 +7,7 @@ use SecureMy\Expressions\Expression;
 use SecureMy\QueryBuilder;
 use SecureMy\Security;
 
-class LeftOuterJoinFragment extends QueryBuilder implements FragmentInterface
+class LeftOuterJoinFragment extends QueryBuilder
 {
     protected $table;
     protected $condition;
@@ -30,5 +30,21 @@ class LeftOuterJoinFragment extends QueryBuilder implements FragmentInterface
         $table = "`{$this->table}`";
         $alias = $this->alias === null ? '' : "AS `{$this->alias}`";
         return "LEFT JOIN $table $alias ON {$this->condition}";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getValues()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getExpressions()
+    {
+        return [$this->condition];
     }
 }

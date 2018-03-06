@@ -7,7 +7,7 @@ use SecureMy\Expressions\Expression;
 use SecureMy\QueryBuilder;
 use SecureMy\Security;
 
-class FullOuterJoinFragment extends QueryBuilder implements FragmentInterface
+class FullOuterJoinFragment extends QueryBuilder
 {
     protected $table;
     protected $condition;
@@ -27,4 +27,22 @@ class FullOuterJoinFragment extends QueryBuilder implements FragmentInterface
         $alias = $this->alias === null ? '' : "AS `{$this->alias}`";
         return "FULL OUTER JOIN $table $alias ON {$this->condition}";
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getValues()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getExpressions()
+    {
+        return [$this->condition];
+    }
+
+
 }

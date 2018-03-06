@@ -6,7 +6,7 @@ not be possible, to create an sql injection vulnerability.
 ## basic usage
 
 ```
-$qb = new QueryBuilder();
+$qb = QueryBuilder::create();
 $qb = $qb
     ->from('products', 'p')
     ->join(
@@ -70,7 +70,7 @@ vulnerabilities. SecureMy protectect identifier through an character whitelist. 
 Most query builder allow doing something like this:
 
 ```
-$qb = new QueryBuilder();
+$qb = QueryBuilder::create();
 $qb
     ->from('products')
     ->where("products.name = 'shirt'"); // most libs recomment doing ->where('roducts.name = :name') but none I found, ensures this
@@ -80,7 +80,7 @@ This is not secure, as this could result in very dangerous sql-injection vulnera
 Imagine an unexperienced developer doing this:
 
 ```
-$qb = new QueryBuilder();
+$qb = QueryBuilder::create();
 $qb
     ->from('products')
     ->where("products.name = {$_GET['productName']}");
@@ -90,7 +90,7 @@ You cannot walk into this trap with SecureMy. SecureMy prevents you from doing s
 with a little trade of with regard to code verbosity:
 
 ```
-$qb = new QueryBuilder();
+$qb = QueryBuilder::create();
 $qb
     ->from('products')
     ->where(

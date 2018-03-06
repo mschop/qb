@@ -222,11 +222,6 @@ abstract class QueryBuilder
         return new RightJoinFragment($this, $table, $condition, $alias);
     }
 
-    public function fullJoin(string $table, Expression $condition, string $alias = null): FullJoinFragment
-    {
-        return new FullJoinFragment($this, $table, $condition, $alias);
-    }
-
     public function where($expression): WhereFragment
     {
         return new WhereFragment($this, $expression);

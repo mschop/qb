@@ -1,6 +1,7 @@
 {
   "name": "mschop/securemy",
   "description": "Object oriented, immutable and 100% secure sql query builder for PHP",
+  "license": "MIT",
   "autoload": {
     "psr-4": {
       "SecureMy\\": "src/"

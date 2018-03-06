@@ -95,17 +95,13 @@ abstract class QueryBuilder
             $query .= self::LINEBREAK;
             $query .= implode(self::LINEBREAK, $groupedFragments[JoinFragment::class]);
         }
-        if (isset($groupedFragments[LeftJoinFragment::class])) {
+        if (isset($groupedFragments[JoinUsingFragment::class])) {
             $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, $groupedFragments[LeftJoinFragment::class]);
+            $query .= implode(self::LINEBREAK, array_reverse($groupedFragments[JoinUsingFragment::class]));
         }
-        if (isset($groupedFragments[RightJoinFragment::class])) {
+        if (isset($groupedFragments[JoinFragment::class])) {
             $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, $groupedFragments[RightJoinFragment::class]);
-        }
-        if (isset($groupedFragments[FullJoinFragment::class])) {
-            $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, $groupedFragments[FullJoinFragment::class]);
+            $query .= implode(self::LINEBREAK, array_reverse($groupedFragments[JoinFragment::class]));
         }
         if (isset($groupedFragments[WhereFragment::class])) {
             $query .= self::LINEBREAK . "WHERE ";

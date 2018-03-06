@@ -312,7 +312,7 @@ abstract class QueryBuilder
 
     public function like($operand1, $operand2)
     {
-        return new LikeExpression($operand1, $operand2);
+        return new LikeExpression([$operand1, $operand2]);
     }
 
     public function column(string $tableOrColumn, string $column = null)

@@ -6,6 +6,7 @@ use SecureMy\Expressions\AndExpression;
 use SecureMy\Expressions\ColumnExpression;
 use SecureMy\Expressions\EqExpression;
 use SecureMy\Expressions\Expression;
+use SecureMy\Expressions\FuncExpression;
 use SecureMy\Expressions\LikeExpression;
 use SecureMy\Expressions\NotExpression;
 use SecureMy\Expressions\OrExpression;
@@ -169,11 +170,11 @@ abstract class QueryBuilder
     /**
      * Returns a new select fragment
      *
-     * @param string      $select
+     * @param string|Expression      $select
      * @param string|null $alias
      * @return SelectFragment
      */
-    public function select(string $select, string $alias = null): SelectFragment
+    public function select($select, string $alias = null): SelectFragment
     {
         return new SelectFragment($this, $select, $alias);
     }
@@ -319,5 +320,15 @@ abstract class QueryBuilder
     public function param(string $name)
     {
         return new ParamExpression($name);
+    }
+
+    /**
+     * @param string $funcName
+     * @param array  ...$parameter
+     * @return FuncExpression
+     */
+    public function func(string $funcName, ...$parameter) : FuncExpression
+    {
+        return new FuncExpression($funcName, $parameter);
     }
 }

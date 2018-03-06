@@ -3,6 +3,7 @@
 namespace SecureMy\Fragments;
 
 
+use SecureMy\Expressions\Expression;
 use SecureMy\QueryBuilder;
 use SecureMy\Security;
 
@@ -11,9 +12,11 @@ class SelectFragment extends QueryBuilder
     protected $select;
     protected $alias;
 
-    public function __construct(QueryBuilder $prev, string $select, string $alias = null)
+    public function __construct(QueryBuilder $prev, $select, string $alias = null)
     {
-        Security::validateIdentifier($select);
+        if(!$select instanceof Expression) {
+            Security::validateIdentifier($select);
+        }
         if($alias !== null) {
             Security::validateIdentifier($alias);
         }
@@ -24,7 +27,7 @@ class SelectFragment extends QueryBuilder
 
     public function __toString()
     {
-        $select = "`{$this->select}`";
+        $select = $this->select instanceof Expression ? $this->select : "`{$this->select}`";
         $alias = $this->alias !== null ? " AS `{$this->alias}`" : "";
         return $select . $alias;
     }

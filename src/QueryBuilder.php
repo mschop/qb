@@ -120,22 +120,6 @@ abstract class QueryBuilder
 
 
         return $query;
-
-
-        // BUILD PARAMS
-        $params = [];
-        foreach($groupedFragments as $group) {
-            /** @var QueryBuilder $fragment */
-            foreach($group as $fragment) {
-                foreach($fragment->getExpressions() as $expression) {
-                    $params = array_merge($params, $expression->getValues());
-                }
-                $params = array_merge($params, $fragment->getValues());
-            }
-        }
-
-
-        return new BuildResult($query, $params);
     }
 
     public function getParams()

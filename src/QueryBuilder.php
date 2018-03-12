@@ -245,14 +245,14 @@ abstract class QueryBuilder
         }
     }
 
-    public function groupBy($groupBy): GroupByFragment
+    public function group($by): GroupByFragment
     {
-        return new GroupByFragment($this, $groupBy);
+        return new GroupByFragment($this, $by);
     }
 
-    public function orderBy($orderBy): OrderByFragment
+    public function order($by): OrderByFragment
     {
-        return new OrderByFragment($this, $orderBy);
+        return new OrderByFragment($this, $by);
     }
 
     public function bind($key, $value): ValueFragment
@@ -312,7 +312,7 @@ abstract class QueryBuilder
         return new LikeExpression([$operand1, $operand2]);
     }
 
-    public function column(string $tableOrColumn, string $column = null)
+    public function col(string $tableOrColumn, string $column = null)
     {
         return new ColumnExpression($tableOrColumn, $column);
     }

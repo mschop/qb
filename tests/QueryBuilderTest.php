@@ -17,8 +17,8 @@ class QueryBuilderTest extends TestCase
             ->join(
                 'product_categories',
                 $qb->eq(
-                    $qb->column('p', 'productId'),
-                    $qb->column('pc', 'id')
+                    $qb->col('p', 'productId'),
+                    $qb->col('pc', 'id')
                 ),
                 'pc'
             )
@@ -26,22 +26,22 @@ class QueryBuilderTest extends TestCase
                 'product_translations',
                 $qb->and(
                     $qb->eq(
-                        $qb->column('pt.productId'),
-                        $qb->column('p.id')
+                        $qb->col('pt.productId'),
+                        $qb->col('p.id')
                     ),
                     $qb->eq(
-                        $qb->column('pt.languageId'),
+                        $qb->col('pt.languageId'),
                         10
                     ),
-                    $qb->not($qb->column('pt.inactive'))
+                    $qb->not($qb->col('pt.inactive'))
                 )
             )
             ->where(
                 $qb->eq(
-                    $qb->column('products', 'manufacturerId'),
+                    $qb->col('products', 'manufacturerId'),
                     $qb->param('manufacturerId')
                 ),
-                $qb->not($qb->column('products.inactive'))
+                $qb->not($qb->col('products.inactive'))
             )
             ->bind('manufacturerId', 15);
 

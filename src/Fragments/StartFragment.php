@@ -17,7 +17,7 @@ class StartFragment extends QueryBuilder
      */
     protected function getValues()
     {
-        return [];
+        return null;
     }
 
     /**
@@ -25,6 +25,6 @@ class StartFragment extends QueryBuilder
      */
     protected function getExpressions()
     {
-        return [];
+        return null;
     }
 }

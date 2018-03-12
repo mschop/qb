@@ -26,7 +26,7 @@ class WhereFragment extends QueryBuilder
      */
     protected function getValues()
     {
-        return [];
+        return null;
     }
 
     /**

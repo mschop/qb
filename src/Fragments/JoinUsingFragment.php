@@ -58,12 +58,12 @@ class JoinUsingFragment extends QueryBuilder
 
     protected function getValues()
     {
-        return [];
+        return null;
     }
 
     protected function getExpressions()
     {
-        return [];
+        return null;
     }
 
 }

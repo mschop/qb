@@ -41,6 +41,6 @@ class ValueFragment extends QueryBuilder
      */
     protected function getExpressions()
     {
-        return [];
+        return null;
     }
 }

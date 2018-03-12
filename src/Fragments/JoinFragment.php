@@ -45,7 +45,7 @@ class JoinFragment extends QueryBuilder
      */
     protected function getValues()
     {
-        return [];
+        return null;
     }
 
     /**

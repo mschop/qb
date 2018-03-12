@@ -58,7 +58,7 @@ class SelectFragment extends QueryBuilder
      */
     protected function getValues()
     {
-        return [];
+        return null;
     }
 
     /**
@@ -66,7 +66,7 @@ class SelectFragment extends QueryBuilder
      */
     protected function getExpressions()
     {
-        return $this->select instanceof Expression ? [$this->select] : [];
+        return $this->select instanceof Expression ? [$this->select] : null;
     }
 
 }

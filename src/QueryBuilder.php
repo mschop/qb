@@ -36,6 +36,15 @@ abstract class QueryBuilder
     const INDENTATION = '   ';
     const LINEBREAK = "\n";
 
+    const INDEX_DEFAULT = -1;
+    const INDEX_FROM = 0;
+    const INDEX_SELECT = 1;
+    const INDEX_JOIN = 2;
+    const INDEX_JOIN_USING = 3;
+    const INDEX_GROUP = 4;
+    const INDEX_ORDER = 5;
+    const INDEX_WHERE = 6;
+
     /**
      * Fragments are chained instead of collected in collections (like many other query builder do)
      * This variable hold the previous QueryBuild Object in the chain.
@@ -43,6 +52,9 @@ abstract class QueryBuilder
      * @var QueryBuilder|null
      */
     protected $prev;
+
+    public static $one = 0;
+    public static $two = 0;
 
     /**
      * QueryBuilder constructor.
@@ -67,58 +79,107 @@ abstract class QueryBuilder
     public function getQuery(): string
     {
         // GROUP FRAGMENTS
-
-        $groupedFragments = [];
-        $cur              = $this;
-        do {
-            $curClass = get_class($cur);
-            if (!isset($groupedFragments[$curClass])) {
-                $groupedFragments[$curClass] = [];
-            }
-            $groupedFragments[$curClass][] = $cur;
-            $cur                           = $cur->prev;
-        } while ($cur);
-
-        if (!isset($groupedFragments[FromFragment::class])) {
-            throw new InvalidBuilderStateException("No from fragment specified");
+        $fragments = new \SplFixedArray(7);
+        for($x = 0; $x < 7; $x++) {
+            $fragments[$x] = '';
         }
+        $cur       = $this;
+        do {
+            $index = $this->mapObjectToIndex($cur);
+            if($index === self::INDEX_DEFAULT) {
+                $cur = $cur->prev;
+                continue;
+            }
+            if (empty($fragments[$index])) {
+                $fragments[$index] .= $cur;
+            } else {
+                $add = '';
+
+                if (
+                    $cur instanceof SelectFragment
+                    || $cur instanceof GroupByFragment
+                    || $cur instanceof OrderByFragment
+                ) {
+                    $add .= ',';
+                }
+
+                if (
+                    $cur instanceof JoinUsingFragment
+                    || $cur instanceof JoinFragment
+                    || $cur instanceof WhereFragment
+                    || $cur instanceof SelectFragment
+                ) {
+                    $add .= self::LINEBREAK;
+                }
+
+                if ($cur instanceof WhereFragment) {
+                    $add .= 'AND';
+                }
+
+                $fragments[$index] .= $add . $cur;
+            }
+            $cur = $cur->prev;
+        } while ($cur);
 
 
         // BUILD QUERY
 
-        $query = '';
+        $query = self::LINEBREAK . 'SELECT' . self::LINEBREAK . $fragments[self::INDEX_SELECT];
+        if(empty($fragments[self::INDEX_FROM])) {
+            throw new InvalidBuilderStateException('From is missing');
+        }
 
-        $query .= "SELECT" . self::LINEBREAK . self::INDENTATION;
-        $query .= implode("," . self::LINEBREAK . self::INDENTATION, $groupedFragments[SelectFragment::class]);
         $query .= self::LINEBREAK;
-        $query .= $groupedFragments[FromFragment::class][0];
-        if (isset($groupedFragments[JoinFragment::class])) {
+        $query .= $fragments[self::INDEX_FROM];
+
+        if(!empty($fragments[self::INDEX_JOIN_USING])) {
             $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, $groupedFragments[JoinFragment::class]);
-        }
-        if (isset($groupedFragments[JoinUsingFragment::class])) {
-            $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, array_reverse($groupedFragments[JoinUsingFragment::class]));
-        }
-        if (isset($groupedFragments[JoinFragment::class])) {
-            $query .= self::LINEBREAK;
-            $query .= implode(self::LINEBREAK, array_reverse($groupedFragments[JoinFragment::class]));
-        }
-        if (isset($groupedFragments[WhereFragment::class])) {
-            $query .= self::LINEBREAK . "WHERE ";
-            $query .= implode(self::LINEBREAK . "AND", $groupedFragments[WhereFragment::class]);
-        }
-        if (isset($groupedFragments[GroupByFragment::class])) {
-            $query .= self::LINEBREAK . "GROUP BY ";
-            $query .= implode(', ', array_reverse($groupedFragments[GroupByFragment::class]));
-        }
-        if (isset($groupedFragments[OrderByFragment::class])) {
-            $query .= self::LINEBREAK . 'ORDER BY ';
-            $query .= implode(', ', array_reverse($groupedFragments[OrderByFragment::class]));
+            $query .= $fragments[self::INDEX_JOIN_USING];
         }
 
+        if(!empty($fragments[self::INDEX_JOIN])) {
+            $query .= self::LINEBREAK;
+            $query .= $fragments[self::INDEX_JOIN];
+        }
+
+        if(!empty($fragments[self::INDEX_WHERE])) {
+            $query .= self::LINEBREAK;
+            $query .= 'WHERE ';
+            $query .= $fragments[self::INDEX_WHERE];
+        }
+
+        if(!empty($fragments[self::INDEX_GROUP])) {
+            $query .= self::LINEBREAK;
+            $query .= 'GROUP BY ';
+            $query .= $fragments[self::INDEX_GROUP];
+        }
+        if(!empty($fragments[self::INDEX_ORDER])) {
+            $query .= self::LINEBREAK;
+            $query .= 'ORDER BY ';
+            $query .= $fragments[self::INDEX_ORDER];
+        }
 
         return $query;
+    }
+
+    protected function mapObjectToIndex($obj)
+    {
+        if($obj instanceof FromFragment) {
+            return self::INDEX_FROM;
+        } elseif($obj instanceof SelectFragment) {
+            return self::INDEX_SELECT;
+        } elseif($obj instanceof JoinFragment) {
+            return self::INDEX_JOIN;
+        } elseif($obj instanceof JoinUsingFragment) {
+            return self::INDEX_JOIN_USING;
+        } elseif($obj instanceof GroupByFragment) {
+            return self::INDEX_GROUP;
+        } elseif($obj instanceof OrderByFragment) {
+            return self::INDEX_ORDER;
+        } elseif($obj instanceof WhereFragment) {
+            return self::INDEX_WHERE;
+        }
+        return self::INDEX_DEFAULT;
     }
 
     public function getParams()
@@ -126,10 +187,16 @@ abstract class QueryBuilder
         $cur    = $this;
         $params = [];
         do {
-            foreach ($cur->getExpressions() as $expression) {
-                $params = array_merge($params, $expression->getValues());
+            $expression = $cur->getExpressions();
+            if($expression !== null) {
+                foreach ($cur->getExpressions() as $expression) {
+                    $params = array_merge($params, $expression->getValues());
+                }
             }
-            $params = array_merge($params, $cur->getValues());
+            $values = $cur->getValues();
+            if($values !== null) {
+                $params = array_merge($params, $cur->getValues());
+            }
             $cur    = $cur->prev;
         } while ($cur);
 
@@ -141,14 +208,14 @@ abstract class QueryBuilder
     /**
      * Fetches parameter values, that are bound with a fragment (mainly ValueFragment)
      *
-     * @return array
+     * @return array|null
      */
     protected abstract function getValues();
 
     /**
      * Fetches all expression on level 1 in a fragment
      *
-     * @return Expression[]
+     * @return Expression[]|null
      */
     protected abstract function getExpressions();
 
@@ -170,8 +237,8 @@ abstract class QueryBuilder
     /**
      * Returns a new select fragment
      *
-     * @param string|Expression      $select
-     * @param string|null $alias
+     * @param string|Expression $select
+     * @param string|null       $alias
      * @return SelectFragment
      */
     public function select($select, string $alias = null): SelectFragment
@@ -234,11 +301,11 @@ abstract class QueryBuilder
      */
     public function where(): WhereFragment
     {
-        $args = func_get_args();
+        $args  = func_get_args();
         $count = count($args);
-        if($count > 1) {
+        if ($count > 1) {
             return new WhereFragment($this, call_user_func_array([$this, 'and'], $args));
-        } elseif($count = 0) {
+        } elseif ($count = 0) {
             throw new \InvalidArgumentException("missing where condition");
         } else {
             return new WhereFragment($this, $args[0]);
@@ -327,7 +394,7 @@ abstract class QueryBuilder
      * @param array  ...$parameter
      * @return FuncExpression
      */
-    public function func(string $funcName, ...$parameter) : FuncExpression
+    public function func(string $funcName, ...$parameter): FuncExpression
     {
         return new FuncExpression($funcName, $parameter);
     }

@@ -53,7 +53,7 @@ class OrderByFragment extends QueryBuilder
      */
     protected function getValues()
     {
-        return [];
+        return null;
     }
 
     /**
@@ -61,7 +61,7 @@ class OrderByFragment extends QueryBuilder
      */
     protected function getExpressions()
     {
-        return [];
+        return null;
     }
 
 
